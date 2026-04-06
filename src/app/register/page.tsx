@@ -1,127 +1,101 @@
-"use client"
+import Link from 'next/link'
+import { Bookmark, Building2, FileText, Image as ImageIcon, Sparkles } from 'lucide-react'
+import { NavbarShell } from '@/components/shared/navbar-shell'
+import { Footer } from '@/components/shared/footer'
+import { getFactoryState } from '@/design/factory/get-factory-state'
+import { getProductKind } from '@/design/factory/get-product-kind'
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
-import { Mail, Lock, User, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useAuth } from "@/lib/auth-context"
-
-export default function RegisterPage() {
-  const router = useRouter()
-  const { signup } = useAuth()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-    try {
-      await signup(name, email, password)
-      router.push("/settings")
-    } catch {
-      setError("Unable to create account")
-    } finally {
-      setIsLoading(false)
+function getRegisterConfig(kind: ReturnType<typeof getProductKind>) {
+  if (kind === 'directory') {
+    return {
+      shell: 'bg-[#f8fbff] text-slate-950',
+      panel: 'border border-slate-200 bg-white',
+      side: 'border border-slate-200 bg-slate-50',
+      muted: 'text-slate-600',
+      action: 'bg-slate-950 text-white hover:bg-slate-800',
+      icon: Building2,
+      title: 'Create a business-ready account',
+      body: 'List services, manage locations, and activate trust signals with a proper directory workflow.',
     }
   }
+  if (kind === 'editorial') {
+    return {
+      shell: 'bg-[#fbf6ee] text-[#241711]',
+      panel: 'border border-[#dcc8b7] bg-[#fffdfa]',
+      side: 'border border-[#e6d6c8] bg-[#fff4e8]',
+      muted: 'text-[#6e5547]',
+      action: 'bg-[#241711] text-[#fff1e2] hover:bg-[#3a241b]',
+      icon: FileText,
+      title: 'Start your contributor workspace',
+      body: 'Create a profile for essays, issue drafts, editorial review, and publication scheduling.',
+    }
+  }
+  if (kind === 'visual') {
+    return {
+      shell: 'bg-[#07101f] text-white',
+      panel: 'border border-white/10 bg-white/6',
+      side: 'border border-white/10 bg-white/5',
+      muted: 'text-slate-300',
+      action: 'bg-[#8df0c8] text-[#07111f] hover:bg-[#77dfb8]',
+      icon: ImageIcon,
+      title: 'Set up your creator profile',
+      body: 'Launch a visual-first account with gallery publishing, identity surfaces, and profile-led discovery.',
+    }
+  }
+  return {
+    shell: 'bg-[#f7f1ea] text-[#261811]',
+    panel: 'border border-[#ddcdbd] bg-[#fffaf4]',
+    side: 'border border-[#e8dbce] bg-[#f3e8db]',
+    muted: 'text-[#71574a]',
+    action: 'bg-[#5b2b3b] text-[#fff0f5] hover:bg-[#74364b]',
+    icon: Bookmark,
+    title: 'Create a curator account',
+    body: 'Build shelves, save references, and connect collections to your profile without a generic feed setup.',
+  }
+}
+
+export default function RegisterPage() {
+  const { recipe } = getFactoryState()
+  const productKind = getProductKind(recipe)
+  const config = getRegisterConfig(productKind)
+  const Icon = config.icon
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen max-w-md items-center px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
-        >
-          <div className="mb-6">
-            <Link href="/" className="text-lg font-semibold text-foreground">
-              Back to home
-            </Link>
+    <div className={`min-h-screen ${config.shell}`}>
+      <NavbarShell />
+      <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+          <div className={`rounded-[2rem] p-8 ${config.side}`}>
+            <Icon className="h-8 w-8" />
+            <h1 className="mt-5 text-4xl font-semibold tracking-[-0.05em]">{config.title}</h1>
+            <p className={`mt-5 text-sm leading-8 ${config.muted}`}>{config.body}</p>
+            <div className="mt-8 grid gap-4">
+              {['Different onboarding per product family', 'No repeated one-size-fits-all shell', 'Profile, publishing, and discovery aligned'].map((item) => (
+                <div key={item} className="rounded-[1.5rem] border border-current/10 px-4 py-4 text-sm">{item}</div>
+              ))}
+            </div>
           </div>
 
-          <h1 className="text-2xl font-semibold text-foreground">Create account</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Create a profile to manage your account.
-          </p>
-
-          {error && (
-            <div className="mt-4 rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-2 text-sm text-destructive">
-              {error}
+          <div className={`rounded-[2rem] p-8 ${config.panel}`}>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Create account</p>
+            <form className="mt-6 grid gap-4">
+              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Full name" />
+              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Email address" />
+              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Password" type="password" />
+              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="What are you creating or publishing?" />
+              <button type="submit" className={`inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-semibold ${config.action}`}>Create account</button>
+            </form>
+            <div className={`mt-6 flex items-center justify-between text-sm ${config.muted}`}>
+              <span>Already have an account?</span>
+              <Link href="/login" className="inline-flex items-center gap-2 font-semibold hover:underline">
+                <Sparkles className="h-4 w-4" />
+                Sign in
+              </Link>
             </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="John Doe"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="pl-9"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-9"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Create a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-9"
-                  required
-                />
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create account"}
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
-              Sign in
-            </Link>
-          </p>
-        </motion.div>
-      </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
     </div>
   )
 }
