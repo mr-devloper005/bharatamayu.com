@@ -2,75 +2,75 @@ import type { TaskKey } from '@/lib/site-config'
 
 export const siteContent = {
   navbar: {
-    tagline: 'Independent reading platform',
+    tagline: 'Short reads & curated bookmarks',
   },
   footer: {
-    tagline: 'Stories, resources, and discoverable posts',
+    tagline: 'Social bookmarking for fast readers',
   },
   hero: {
-    badge: 'Latest stories and visuals',
-    title: ['A thoughtful home for', 'stories, visuals, and discovery.'],
+    badge: 'bharatamayu.com bookmarks',
+    title: ['Quick links,', 'clear blurbs.'],
     description:
-      'Explore fresh articles, image-led posts, and discoverable content across the platform through a calmer and clearer browsing experience.',
+      'Discover hand-picked stories and resources on bharatamayu.com—built for people who skim, save, and come back without wading through image-heavy feeds.',
     primaryCta: {
-      label: 'Read latest stories',
-      href: '/articles',
+      label: 'Open bookmarks',
+      href: '/sbm',
     },
     secondaryCta: {
-      label: 'Explore visuals',
-      href: '/image-sharing',
+      label: 'Browse profiles',
+      href: '/profile',
     },
-    searchPlaceholder: 'Search stories, visuals, listings, and more',
+    searchPlaceholder: 'Search bookmarks, profiles, and more',
     focusLabel: 'Focus',
-    featureCardBadge: 'latest cover rotation',
-    featureCardTitle: 'Latest posts shape the visual identity of the homepage.',
+    featureCardBadge: 'Short-read shelf',
+    featureCardTitle: 'Headlines and excerpts stay readable at a glance.',
     featureCardDescription:
-      'Recent images and stories stay at the center of the experience without changing any core platform behavior.',
+      'The homepage keeps Social Bookmarking in the spotlight while other tasks stay available from navigation.',
   },
   home: {
     metadata: {
-      title: 'Stories, visuals, and discoverable content',
+      title: 'bharatamayu.com — social bookmarking for short reads',
       description:
-        'Explore articles, images, listings, and curated posts through a cleaner reading-first experience.',
-      openGraphTitle: 'Stories, visuals, and discoverable content',
+        'Save and scan curated links on bharatamayu.com: tight headlines, short blurbs, and a fast vertical rhythm inspired by short-form video—without the noise.',
+      openGraphTitle: 'bharatamayu.com — social bookmarking',
       openGraphDescription:
-        'Discover articles, visual posts, and connected content through a calmer reading-first experience.',
-      keywords: ['story platform', 'article site', 'visual content', 'content discovery'],
+        'A bookmarking shelf for short content readers. Browse curated links and profiles on bharatamayu.com.',
+      keywords: ['bharatamayu', 'social bookmarking', 'short reads', 'curated links', 'bookmark feed'],
     },
-    introBadge: 'About the platform',
-    introTitle: 'Built for reading, browsing, and connecting different kinds of content.',
+    introBadge: 'About bharatamayu.com',
+    introTitle: 'Bookmarking that respects your attention.',
     introParagraphs: [
-      'This site brings together article-style reading, visual browsing, and structured discovery so visitors can move naturally between different content types.',
-      'Instead of separating stories, visuals, and supporting resources into disconnected surfaces, the platform keeps them connected in one place with consistent navigation and easier exploration.',
-      'Whether someone starts with a story, an image-led post, a listing, or a resource page, they can keep discovering related content without friction.',
+      'bharatamayu.com is a social bookmarking surface where each item leads with a headline and a short excerpt—ideal for readers who want signal without filler.',
+      'The layout borrows the pacing of short-form feeds: a vertical stack you can scroll quickly, with lime accents that mark where to look next.',
+      'Profiles stay available as a secondary lane so people and publishers remain discoverable without crowding the bookmark-first story.',
     ],
     sideBadge: 'At a glance',
     sidePoints: [
-      'Reading-first homepage with stronger emphasis on stories and imagery.',
-      'Connected sections for articles, visuals, listings, and supporting resources.',
-      'Cleaner browsing rhythm designed to make exploration feel easier.',
-      'Lightweight interactions that keep the experience fast and readable.',
+      'SBM-first homepage with a shorts-style reading rail.',
+      'Teal and lime system tuned for contrast and scan speed.',
+      'Text-forward cards—no thumbnail requirement for the core experience.',
+      'Light motion: soft fades and hover lifts, no heavy scripts.',
     ],
     primaryLink: {
-      label: 'Browse articles',
-      href: '/articles',
+      label: 'Browse bookmarks',
+      href: '/sbm',
     },
     secondaryLink: {
-      label: 'See visuals',
-      href: '/image-sharing',
+      label: 'See profiles',
+      href: '/profile',
     },
   },
   cta: {
-    badge: 'Start exploring',
-    title: 'Explore articles, visuals, and resources through one connected experience.',
+    badge: 'Start on bharatamayu.com',
+    title: 'Save links, scan blurbs, and follow curators in one place.',
     description:
-      'Move between articles, image-led posts, listings, and resources through one clearer and more connected visual system.',
+      'Join bharatamayu.com to bookmark what matters and browse a calmer feed that still moves at the speed you expect from short content.',
     primaryCta: {
-      label: 'Get Started Free',
+      label: 'Create an account',
       href: '/register',
     },
     secondaryCta: {
-      label: 'Contact Sales',
+      label: 'Contact',
       href: '/contact',
     },
   },
@@ -97,11 +97,11 @@ export const taskPageMetadata: Record<Exclude<TaskKey, 'comment' | 'org' | 'soci
   },
   profile: {
     title: 'Profiles and public pages',
-    description: 'Discover public profiles, brand pages, and identity-focused posts in one place.',
+    description: 'Discover public profiles, curators, and identity-focused pages on bharatamayu.com.',
   },
   sbm: {
-    title: 'Curated links and saved resources',
-    description: 'Browse useful links, saved references, and curated resources organized for discovery.',
+    title: 'Social bookmarking — short reads',
+    description: 'Browse curated bookmarks, headlines, and excerpts saved by the bharatamayu.com community.',
   },
   pdf: {
     title: 'PDFs and downloadable resources',
@@ -168,27 +168,26 @@ export const taskIntroCopy: Record<
   profile: {
     title: 'Profiles, identities, and public pages',
     paragraphs: [
-      'Profiles capture the identity behind a business, creator, brand, or project and help visitors understand who is behind the content they are exploring.',
-      'These pages work as trust anchors across the site and connect naturally with stories, listings, documents, and other post types.',
-      'Browse profiles to understand people and brands more clearly, then continue into related content from the same source.',
+      'Profiles on bharatamayu.com highlight the people and brands behind saved links—trust anchors for a bookmark-first community.',
+      'Use them to follow curators, see what they collect, and jump into their public bookmark shelf when you want more context.',
+      'This lane stays secondary to Social Bookmarking on the homepage but remains one click away in navigation.',
     ],
     links: [
-      { label: 'Open listings', href: '/listings' },
-      { label: 'Read articles', href: '/articles' },
-      { label: 'Browse image sharing', href: '/image-sharing' },
+      { label: 'Open bookmarks', href: '/sbm' },
+      { label: 'Home', href: '/' },
     ],
   },
   sbm: {
-    title: 'Curated links and bookmarked resources',
+    title: 'Social bookmarking — the bharatamayu.com shelf',
     paragraphs: [
-      'This section collects useful links, references, tools, and saved resources in a text-first browsing format.',
-      'Bookmarks stay connected to the rest of the platform, making it easier to move from a saved link into related stories, listings, or resources.',
-      'Use this section to organize helpful sources and discover connected content without leaving the broader site experience.',
+      'This is the primary lane: curated links with short excerpts so you can scan a lot in little time—similar energy to short-form video, but text-first.',
+      'Entries are organized for research and revisit: categories, clear typography, and lime accents that guide the eye down the stack.',
+      'Save what matters, share the URL, and keep your reading list on bharatamayu.com without leaving the broader site experience.',
     ],
     links: [
-      { label: 'Browse articles', href: '/articles' },
-      { label: 'Explore listings', href: '/listings' },
-      { label: 'Open PDFs', href: '/pdf' },
+      { label: 'Browse profiles', href: '/profile' },
+      { label: 'Search', href: '/search' },
+      { label: 'Home', href: '/' },
     ],
   },
   pdf: {

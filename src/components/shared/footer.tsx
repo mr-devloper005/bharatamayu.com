@@ -135,33 +135,36 @@ export function Footer() {
 
   if (recipe.footer === 'editorial-footer') {
     return (
-      <footer className="border-t border-[#dbc6b6] bg-[linear-gradient(180deg,#fff9f0_0%,#fff1df_100%)] text-[#2f1d16]">
+      <footer className="border-t border-[#2C5D63]/25 bg-[#283739] text-[#E0E0E0]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr_0.9fr]">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#dbc6b6] bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#72594a]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#A2C11C]/35 bg-[#2C5D63]/35 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#A2C11C]">
                 <Sparkles className="h-3.5 w-3.5" />
-                Editorial desk
+                bharatamayu.com
               </div>
-              <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em]">{SITE_CONFIG.name}</h3>
-              <p className="mt-4 max-w-md text-sm leading-7 text-[#72594a]">{SITE_CONFIG.description}</p>
+              <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-[#E0E0E0]">{SITE_CONFIG.name}</h3>
+              <p className="mt-4 max-w-md text-sm leading-7 text-[#E0E0E0]/72">{SITE_CONFIG.description}</p>
             </div>
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8b6d5a]">Sections</h4>
-              <ul className="mt-4 space-y-3 text-sm">
+              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#A2C11C]/85">Sections</h4>
+              <ul className="mt-4 space-y-3 text-sm text-[#E0E0E0]/88">
                 {footerLinks.platform.map((item: any) => (
-                  <li key={item.name}><Link href={item.href} className="hover:text-[#2f1d16]">{item.name}</Link></li>
+                  <li key={item.name}><Link href={item.href} className="transition hover:text-[#A2C11C]">{item.name}</Link></li>
                 ))}
               </ul>
             </div>
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8b6d5a]">Company</h4>
-              <ul className="mt-4 space-y-3 text-sm">
+              <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#A2C11C]/85">Company</h4>
+              <ul className="mt-4 space-y-3 text-sm text-[#E0E0E0]/88">
                 {footerLinks.company.map((item) => (
-                  <li key={item.name}><Link href={item.href} className="hover:text-[#2f1d16]">{item.name}</Link></li>
+                  <li key={item.name}><Link href={item.href} className="transition hover:text-[#A2C11C]">{item.name}</Link></li>
                 ))}
               </ul>
             </div>
+          </div>
+          <div className="mt-10 border-t border-[#E0E0E0]/10 pt-6 text-center text-xs text-[#E0E0E0]/55">
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.domain}
           </div>
         </div>
       </footer>

@@ -61,10 +61,10 @@ const cardStyles = {
     badge: 'bg-slate-950 text-white',
   },
   'editorial-feature': {
-    frame: 'rounded-[1.8rem] border border-[rgba(125,83,45,0.12)] bg-[#fffaf3] shadow-[0_18px_55px_rgba(89,52,24,0.1)] hover:-translate-y-1 hover:shadow-[0_26px_75px_rgba(89,52,24,0.14)]',
-    muted: 'text-[#71584b]',
-    title: 'text-[#2b1d17]',
-    badge: 'bg-[#2b1d17] text-[#fff3df]',
+    frame: 'rounded-xl border border-[#2C5D63]/14 border-l-[5px] border-l-[#A2C11C] bg-[linear-gradient(105deg,rgba(224,228,227,0.55)_0%,#ffffff_52%)] shadow-[0_10px_32px_rgba(40,55,57,0.07)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(40,55,57,0.11)]',
+    muted: 'text-[#283739]/70',
+    title: 'text-[#283739]',
+    badge: 'bg-[#283739] text-[#A2C11C]',
   },
   'studio-panel': {
     frame: 'rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(7,17,31,0.96),rgba(12,23,43,0.96))] text-white shadow-[0_24px_80px_rgba(15,23,42,0.35)] hover:-translate-y-1 hover:shadow-[0_30px_90px_rgba(15,23,42,0.42)]',
@@ -158,8 +158,8 @@ export function TaskPostCard({
 
   if (isBookmarkVariant) {
     return (
-      <Link href={href} className={`group flex h-full flex-row items-start gap-4 overflow-hidden p-5 transition duration-300 ${visualVariant.frame}`}>
-        <div className="mt-1 rounded-full bg-white/10 p-2.5 text-current transition group-hover:scale-105">
+      <Link href={href} className={`group flex h-full flex-row items-start gap-4 overflow-hidden p-4 sm:p-5 transition duration-300 ${visualVariant.frame}`}>
+        <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#2C5D63]/18 bg-[#E0E0E0]/55 text-[#2C5D63] transition group-hover:border-[#A2C11C] group-hover:bg-[#A2C11C]/18">
           <ExternalLink className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1">
@@ -170,8 +170,8 @@ export function TaskPostCard({
             </span>
             {content.location ? <span className={`inline-flex items-center gap-1 text-xs ${visualVariant.muted}`}><MapPin className="h-3.5 w-3.5" />{content.location}</span> : null}
           </div>
-          <h3 className={`mt-3 line-clamp-2 text-lg font-semibold leading-snug group-hover:opacity-85 ${visualVariant.title}`}>{post.title}</h3>
-          <p className={`mt-2 line-clamp-3 text-sm leading-7 ${visualVariant.muted}`}>{getExcerpt(content.description || post.summary, compact ? 120 : 180) || 'Explore this bookmark.'}</p>
+          <h3 className={`mt-2.5 line-clamp-2 text-[1.15rem] font-bold leading-snug tracking-[-0.02em] group-hover:text-[#2C5D63] ${visualVariant.title}`}>{post.title}</h3>
+          <p className={`mt-2 line-clamp-3 text-sm leading-relaxed ${visualVariant.muted}`}>{getExcerpt(content.description || post.summary, compact ? 120 : 200) || 'Explore this bookmark.'}</p>
           {content.email ? <div className={`mt-3 inline-flex items-center gap-1 text-xs ${visualVariant.muted}`}><Mail className="h-3.5 w-3.5" />{content.email}</div> : null}
         </div>
       </Link>

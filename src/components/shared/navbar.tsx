@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Menu, X, User, FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, ChevronRight, Sparkles, MapPin, Plus } from 'lucide-react'
+import { Search, Menu, X, User, FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, ChevronRight, Sparkles, MapPin, Plus, Bookmark } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
 import { SITE_CONFIG, type TaskKey } from '@/lib/site-config'
@@ -20,7 +20,7 @@ const NavbarAuthControls = dynamic(() => import('@/components/shared/navbar-auth
 const taskIcons: Record<TaskKey, any> = {
   article: FileText,
   listing: Building2,
-  sbm: LayoutGrid,
+  sbm: Bookmark,
   classified: Tag,
   image: ImageIcon,
   profile: User,
@@ -40,12 +40,12 @@ const variantClasses = {
     mobile: 'border-t border-slate-200/70 bg-white/95',
   },
   'editorial-bar': {
-    shell: 'border-b border-[#d7c4b3] bg-[#fff7ee]/90 text-[#2f1d16] backdrop-blur-xl',
-    logo: 'rounded-full border border-[#dbc6b6] bg-white shadow-sm',
-    active: 'bg-[#2f1d16] text-[#fff4e4]',
-    idle: 'text-[#72594a] hover:bg-[#f2e5d4] hover:text-[#2f1d16]',
-    cta: 'rounded-full bg-[#2f1d16] text-[#fff4e4] hover:bg-[#452920]',
-    mobile: 'border-t border-[#dbc6b6] bg-[#fff7ee]',
+    shell: 'border-b border-[#1f3d42] bg-[#2C5D63] text-[#E0E0E0] shadow-[0_10px_40px_rgba(40,55,57,0.28)] backdrop-blur-xl',
+    logo: 'rounded-2xl border border-[#E0E0E0]/25 bg-[#283739]/50 shadow-inner',
+    active: 'bg-[#A2C11C] text-[#283739]',
+    idle: 'text-[#E0E0E0]/85 hover:bg-[#283739]/55 hover:text-[#E0E0E0]',
+    cta: 'rounded-full bg-[#A2C11C] font-semibold text-[#283739] shadow-sm hover:bg-[#b4cf3a]',
+    mobile: 'border-t border-[#1f3d42] bg-[#283739]',
   },
   'floating-bar': {
     shell: 'border-b border-transparent bg-transparent text-white',
@@ -209,23 +209,30 @@ export function Navbar() {
               <img src="/favicon.png?v=20260401" alt={`${SITE_CONFIG.name} logo`} width="48" height="48" className="h-full w-full object-contain" />
             </div>
             <div className="min-w-0 hidden sm:block">
-              <span className="block truncate text-xl font-semibold">{SITE_CONFIG.name}</span>
-              <span className="hidden text-[10px] uppercase tracking-[0.28em] opacity-70 sm:block">{siteContent.navbar.tagline}</span>
-            </div>
+                <span className={cn('block truncate text-xl font-semibold tracking-tight', isEditorial ? 'text-[#E0E0E0]' : 'text-foreground')}>{SITE_CONFIG.name}</span>
+                <span className={cn('hidden text-[10px] uppercase tracking-[0.28em] sm:block', isEditorial ? 'text-[#E0E0E0]/65' : 'opacity-70')}>{siteContent.navbar.tagline}</span>
+              </div>
           </Link>
 
           {isEditorial ? (
-            <div className="hidden min-w-0 flex-1 items-center gap-4 xl:flex">
-              <div className="h-px flex-1 bg-[#d8c8bb]" />
+            <div className="hidden min-w-0 flex-1 items-center justify-center gap-1 xl:flex">
               {primaryNavigation.map((task) => {
+                const Icon = taskIcons[task.key] || LayoutGrid
                 const isActive = pathname.startsWith(task.route)
                 return (
-                  <Link key={task.key} href={task.route} className={cn('text-sm font-semibold uppercase tracking-[0.18em] transition-colors', isActive ? 'text-[#2f1d16]' : 'text-[#7b6254] hover:text-[#2f1d16]')}>
-                    {task.label}
+                  <Link
+                    key={task.key}
+                    href={task.route}
+                    className={cn(
+                      'flex items-center gap-2 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors',
+                      isActive ? style.active : style.idle,
+                    )}
+                  >
+                    <Icon className="h-4 w-4 shrink-0 opacity-90" />
+                    <span className="whitespace-nowrap">{task.label}</span>
                   </Link>
                 )
               })}
-              <div className="h-px flex-1 bg-[#d8c8bb]" />
             </div>
           ) : isFloating ? (
             <div className="hidden min-w-0 flex-1 items-center gap-2 xl:flex">
@@ -274,8 +281,17 @@ export function Navbar() {
               {primaryTask.label}
             </Link>
           ) : null}
+          {primaryTask && recipe.navbar === 'editorial-bar' ? (
+            <Link
+              href={primaryTask.route}
+              className="hidden items-center gap-2 rounded-full border border-[#A2C11C]/35 bg-[#283739]/40 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#E0E0E0]/90 md:inline-flex"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-[#A2C11C]" />
+              {primaryTask.label}
+            </Link>
+          ) : null}
 
-          <Button variant="ghost" size="icon" asChild className="hidden rounded-full md:flex">
+          <Button variant="ghost" size="icon" asChild className={cn('hidden rounded-full md:flex', isEditorial && 'text-[#E0E0E0] hover:bg-[#283739]/55 hover:text-[#E0E0E0]')}>
             <Link href="/search">
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
@@ -286,16 +302,21 @@ export function Navbar() {
             <NavbarAuthControls />
           ) : (
             <div className="hidden items-center gap-2 md:flex">
-              <Button variant="ghost" size="sm" asChild className="rounded-full px-4">
-                <Link href="/login">Sign In</Link>
-              </Button>
-              <Button size="sm" asChild className={style.cta}>
-                <Link href="/register">{isEditorial ? 'Subscribe' : isUtility ? 'Post Now' : 'Get Started'}</Link>
-              </Button>
-            </div>
+                <Button variant="ghost" size="sm" asChild className={cn('rounded-full px-4', isEditorial && 'text-[#E0E0E0] hover:bg-[#283739]/50 hover:text-white')}>
+                  <Link href="/login">Sign In</Link>
+                </Button>
+                <Button size="sm" asChild className={style.cta}>
+                  <Link href="/register">{isEditorial ? 'Join' : isUtility ? 'Post Now' : 'Get Started'}</Link>
+                </Button>
+              </div>
           )}
 
-          <Button variant="ghost" size="icon" className="rounded-full lg:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn('rounded-full lg:hidden', isEditorial && 'text-[#E0E0E0] hover:bg-[#283739]/55')}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
@@ -314,9 +335,18 @@ export function Navbar() {
       {isMobileMenuOpen && (
         <div className={style.mobile}>
           <div className="space-y-2 px-4 py-4">
-            <Link href="/search" onClick={() => setIsMobileMenuOpen(false)} className="mb-3 flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-muted-foreground">
+            <Link
+              href="/search"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={cn(
+                'mb-3 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold',
+                isEditorial
+                  ? 'border border-[#E0E0E0]/15 bg-[#2C5D63]/80 text-[#E0E0E0]'
+                  : 'border border-border bg-card text-muted-foreground',
+              )}
+            >
               <Search className="h-4 w-4" />
-              Search the site
+              Search bookmarks & profiles
             </Link>
             {mobileNavigation.map((item) => {
               const isActive = pathname.startsWith(item.href)

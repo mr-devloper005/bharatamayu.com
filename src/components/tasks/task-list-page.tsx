@@ -34,7 +34,7 @@ const variantShells = {
   'profile-business': 'bg-[linear-gradient(180deg,#f6fbff_0%,#ffffff_100%)]',
   'classified-bulletin': 'bg-[linear-gradient(180deg,#edf3e4_0%,#ffffff_100%)]',
   'classified-market': 'bg-[linear-gradient(180deg,#f4f6ef_0%,#ffffff_100%)]',
-  'sbm-curation': 'bg-[linear-gradient(180deg,#fff7ee_0%,#ffffff_100%)]',
+  'sbm-curation': 'bg-[linear-gradient(180deg,#e8eceb_0%,#f2f4f3_42%,#ffffff_100%)]',
   'sbm-library': 'bg-[linear-gradient(180deg,#f7f8fc_0%,#ffffff_100%)]',
 } as const
 
@@ -66,11 +66,11 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
       }
     : layoutKey.startsWith('article') || layoutKey.startsWith('sbm')
       ? {
-          muted: 'text-[#72594a]',
-          panel: 'border border-[#dbc6b6] bg-white/90',
-          soft: 'border border-[#dbc6b6] bg-[#fff8ef]',
-          input: 'border border-[#dbc6b6] bg-white text-[#2f1d16]',
-          button: 'bg-[#2f1d16] text-[#fff4e4] hover:bg-[#452920]',
+          muted: 'text-[#283739]/72',
+          panel: 'border border-[#2C5D63]/18 bg-white/95 shadow-[0_16px_40px_rgba(40,55,57,0.06)]',
+          soft: 'border border-[#2C5D63]/14 bg-[#E0E0E0]/35',
+          input: 'border border-[#2C5D63]/22 bg-white text-[#283739]',
+          button: 'bg-[#A2C11C] text-[#283739] hover:bg-[#b4cf3a]',
         }
       : {
           muted: 'text-slate-600',
@@ -211,24 +211,28 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
         ) : null}
 
         {layoutKey === 'sbm-curation' || layoutKey === 'sbm-library' ? (
-          <section className="mb-12 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+          <section className="mb-12 grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-end">
             <div>
-              <p className={`text-xs uppercase tracking-[0.3em] ${ui.muted}`}>{taskConfig?.label || task}</p>
-              <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] text-foreground">Curated resources arranged more like collections than a generic post feed.</h1>
-              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>Bookmarks, saved resources, and reference-style items need calmer grouping and lighter metadata. This variant gives them that separation.</p>
+              <p className={`text-[11px] font-semibold uppercase tracking-[0.28em] ${ui.muted}`}>{taskConfig?.label || task}</p>
+              <h1 className="mt-4 text-4xl font-bold tracking-[-0.04em] text-[#283739] sm:text-5xl">Short links, sharp context—built for fast readers.</h1>
+              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>
+                Every entry on bharatamayu.com leads with a headline and a tight excerpt so you can scan a shelf of ideas without image noise or endless chrome.
+              </p>
             </div>
-            <div className={`rounded-[2rem] p-6 ${ui.panel}`}>
-              <p className={`text-xs uppercase tracking-[0.24em] ${ui.muted}`}>Collection filter</p>
-              <form className="mt-4 flex items-center gap-3" action={taskConfig?.route || '#'}>
-                <select name="category" defaultValue={normalizedCategory} className={`h-11 flex-1 rounded-xl px-3 text-sm ${ui.input}`}>
+            <form className={`grid gap-3 rounded-2xl p-6 ${ui.soft}`} action={taskConfig?.route || '#'}>
+              <div>
+                <label className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${ui.muted}`}>Category</label>
+                <select name="category" defaultValue={normalizedCategory} className={`mt-2 h-11 w-full rounded-xl px-3 text-sm ${ui.input}`}>
                   <option value="all">All categories</option>
                   {CATEGORY_OPTIONS.map((item) => (
                     <option key={item.slug} value={item.slug}>{item.name}</option>
                   ))}
                 </select>
-                <button type="submit" className={`h-11 rounded-xl px-4 text-sm font-medium ${ui.button}`}>Apply</button>
-              </form>
-            </div>
+              </div>
+              <button type="submit" className={`h-11 rounded-xl text-sm font-semibold ${ui.button}`}>
+                Apply filters
+              </button>
+            </form>
           </section>
         ) : null}
 

@@ -126,14 +126,14 @@ function getVisualTone() {
 
 function getCurationTone() {
   return {
-    shell: 'bg-[#f7f1ea] text-[#261811]',
-    panel: 'border border-[#ddcdbd] bg-[#fffaf4] shadow-[0_24px_60px_rgba(91,56,37,0.08)]',
-    soft: 'border border-[#e8dbce] bg-[#f3e8db]',
-    muted: 'text-[#71574a]',
-    title: 'text-[#261811]',
-    badge: 'bg-[#5b2b3b] text-[#fff0f5]',
-    action: 'bg-[#5b2b3b] text-[#fff0f5] hover:bg-[#74364b]',
-    actionAlt: 'border border-[#ddcdbd] bg-transparent text-[#261811] hover:bg-[#efe3d6]',
+    shell: 'bg-[#E8EBEA] text-[#283739]',
+    panel: 'border border-[#2C5D63]/22 bg-[#F4F6F5] shadow-[0_20px_50px_rgba(40,55,57,0.07)]',
+    soft: 'border border-[#2C5D63]/18 bg-[#E0E0E0]/45',
+    muted: 'text-[#283739]/72',
+    title: 'text-[#283739]',
+    badge: 'bg-[#283739] text-[#A2C11C]',
+    action: 'bg-[#A2C11C] text-[#283739] hover:bg-[#b4cf3a]',
+    actionAlt: 'border border-[#2C5D63]/35 bg-transparent text-[#283739] hover:bg-[#2C5D63]/08',
   }
 }
 
@@ -410,63 +410,121 @@ function VisualHome({ primaryTask, imagePosts, profilePosts, articlePosts }: { p
 
 function CurationHome({ primaryTask, bookmarkPosts, profilePosts, articlePosts }: { primaryTask?: EnabledTask; bookmarkPosts: SitePost[]; profilePosts: SitePost[]; articlePosts: SitePost[] }) {
   const tone = getCurationTone()
-  const collections = bookmarkPosts.length ? bookmarkPosts.slice(0, 4) : articlePosts.slice(0, 4)
-  const people = profilePosts.slice(0, 3)
+  const feedSource = bookmarkPosts.length ? bookmarkPosts : articlePosts
+  const feedSlice = feedSource.slice(0, 12)
+  const stackCount = feedSource.length
 
   return (
     <main className={tone.shell}>
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-18">
-        <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-start">
-          <div>
-            <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] ${tone.badge}`}>
-              <Bookmark className="h-3.5 w-3.5" />
-              Curated collections
-            </span>
-            <h1 className={`mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.06em] sm:text-6xl ${tone.title}`}>
-              Save, organize, and revisit resources through shelves, boards, and curated collections.
-            </h1>
-            <p className={`mt-6 max-w-2xl text-base leading-8 ${tone.muted}`}>{SITE_CONFIG.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={primaryTask?.route || '/sbm'} className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${tone.action}`}>
-                Open collections
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/profile" className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${tone.actionAlt}`}>
-                Explore curators
-              </Link>
+      {/* Hero: typographic masthead + mesh — intentionally not a card */}
+      <section className="relative overflow-hidden border-b border-[#1f3d42]/80 bg-[#283739]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.09]"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(-17deg, transparent, transparent 48px, rgba(162,193,28,0.95) 48px, rgba(162,193,28,0.95) 49px)',
+          }}
+          aria-hidden
+        />
+        <div className="pointer-events-none absolute -right-20 top-1/2 h-[130%] w-[58%] -translate-y-1/2 rounded-[50%] bg-[#2C5D63]/30 blur-[80px]" aria-hidden />
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div className="grid gap-14 lg:grid-cols-[1.12fr_0.88fr] lg:items-end">
+            <div>
+              <p className="inline-flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.32em] text-[#A2C11C]">
+                <span className="h-px w-10 bg-[#A2C11C]" aria-hidden />
+                bharatamayu.com · social bookmarks
+              </p>
+              <h1 className="mt-8 max-w-[20ch] text-4xl font-bold leading-[1.06] tracking-[-0.035em] text-[#E0E0E0] sm:text-5xl lg:text-[3.05rem]">
+                <span className="relative inline-block pl-6">
+                  <span className="absolute left-0 top-[0.32em] h-[calc(100%-0.5em)] w-1 rounded-full bg-[#A2C11C]" aria-hidden />
+                  Short reads for people who skim with intent.
+                </span>
+              </h1>
+              <p className="mt-8 max-w-xl text-base leading-relaxed text-[#E0E0E0]/78">{SITE_CONFIG.description}</p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <Link href={primaryTask?.route || '/sbm'} className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5 ${tone.action}`}>
+                  Browse bookmarks
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link href="/profile" className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold ${tone.actionAlt}`}>
+                  Discover profiles
+                </Link>
+              </div>
             </div>
-          </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {collections.map((post) => (
-              <Link key={post.id} href={getTaskHref(resolveTaskKey(post.task, 'sbm'), post.slug)} className={`rounded-[1.8rem] p-6 ${tone.panel}`}>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Collection</p>
-                <h3 className="mt-3 text-2xl font-semibold">{post.title}</h3>
-                <p className={`mt-3 text-sm leading-8 ${tone.muted}`}>{post.summary || 'A calmer bookmark surface with room for context and grouping.'}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className={`rounded-[2rem] p-7 ${tone.panel}`}>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Why this feels different</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">More like saved boards and reading shelves than a generic post feed.</h2>
-            <p className={`mt-4 max-w-2xl text-sm leading-8 ${tone.muted}`}>The structure is calmer, the cards are less noisy, and the page encourages collecting and returning instead of forcing everything into a fast-scrolling list.</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {people.map((post) => (
-              <Link key={post.id} href={`/profile/${post.slug}`} className={`rounded-[1.8rem] p-5 ${tone.soft}`}>
-                <div className="relative h-32 overflow-hidden rounded-[1.2rem]">
-                  <ContentImage src={getPostImage(post)} alt={post.title} fill className="object-cover" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold">{post.title}</h3>
-                <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>Curator profile, saved resources, and collection notes.</p>
-              </Link>
-            ))}
+            <div className="hidden border-l border-[#E0E0E0]/14 pl-8 lg:block">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-[#A2C11C]/88">Live stack</p>
+              <p className="mt-4 font-mono text-5xl font-medium tabular-nums leading-none text-[#E0E0E0]">{stackCount > 0 ? stackCount : '—'}</p>
+              <p className="mt-3 max-w-[18ch] text-sm leading-relaxed text-[#E0E0E0]/58">Titles and blurbs in a vertical rhythm—scroll like shorts, read like a research shelf.</p>
+              {primaryTask ? (
+                <p className="mt-8 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#A2C11C]/75">Featured lane</p>
+              ) : null}
+              {primaryTask ? <p className="mt-2 text-lg font-semibold text-[#E0E0E0]">{primaryTask.label}</p> : null}
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Shorts-style feed rail — text-first bookmark rows */}
+      <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[#2C5D63]/18 pb-6">
+          <div>
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#2C5D63]">New &amp; popular</h2>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#283739]">Headlines you can finish in one breath</p>
+          </div>
+          <Link href="/sbm" className="text-sm font-semibold text-[#2C5D63] underline decoration-[#A2C11C] decoration-2 underline-offset-[5px] transition hover:text-[#283739]">
+            Full bookmark feed
+          </Link>
+        </div>
+
+        {feedSlice.length ? (
+          <div className="sbm-shorts-rail max-h-[min(72vh,700px)] space-y-3 overflow-y-auto overscroll-y-contain pr-1 [scrollbar-width:thin]">
+            {feedSlice.map((post) => (
+              <div key={post.id} className="snap-start">
+                <TaskPostCard post={post} href={getTaskHref(resolveTaskKey(post.task, bookmarkPosts.length ? 'sbm' : 'article'), post.slug)} taskKey={bookmarkPosts.length ? 'sbm' : 'article'} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-[#2C5D63]/25 bg-[#E0E0E0]/25 px-6 py-12 text-center text-sm text-[#283739]/70">
+            No public bookmarks yet—check back soon or submit the first short read from Social Bookmarking.
+          </div>
+        )}
+      </section>
+
+      {/* Library note — single panel, not a “card grid” */}
+      <section className="border-y border-[#2C5D63]/12 bg-[linear-gradient(180deg,rgba(224,228,227,0.5)_0%,rgba(232,235,234,0.9)_100%)]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#2C5D63]">Why bharatamayu.com</p>
+            <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#283739]">A bookmarking shelf—not a noisy social feed.</h3>
+            <p className={`mt-4 text-sm leading-7 ${tone.muted}`}>
+              We foreground the title and the excerpt so you can scan fast, save what matters, and jump back later without wading through thumbnails or clutter.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {profilePosts.length ? (
+        <section className={tone.shell}>
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#2C5D63]">People &amp; pages</p>
+            <h3 className="mt-2 text-xl font-semibold text-[#283739]">Curators on bharatamayu.com</h3>
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              {profilePosts.slice(0, 8).map((post) => (
+                <Link
+                  key={post.id}
+                  href={getTaskHref('profile', post.slug)}
+                  className="inline-flex items-center gap-2.5 rounded-full border border-[#2C5D63]/20 bg-white/90 px-3 py-2 text-sm font-medium text-[#283739] shadow-sm transition duration-200 hover:border-[#A2C11C] hover:shadow-md"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2C5D63]/12 text-xs font-bold uppercase text-[#2C5D63]">{post.title.trim().slice(0, 1)}</span>
+                  <span className="max-w-[14rem] truncate">{post.title}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </main>
   )
 }

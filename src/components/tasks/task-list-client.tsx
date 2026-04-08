@@ -54,14 +54,25 @@ export function TaskListClient({ task, initialPosts, category }: Props) {
 
   if (!merged.length) {
     return (
-      <div className="rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">
+      <div
+        className={
+          task === "sbm"
+            ? "rounded-xl border border-dashed border-[#2C5D63]/25 bg-[#E0E0E0]/20 px-6 py-14 text-center text-sm text-[#283739]/70"
+            : "rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground"
+        }
+      >
         No posts yet for this section.
       </div>
     );
   }
 
+  const gridClass =
+    task === "sbm"
+      ? "mx-auto grid max-w-4xl gap-3 sm:grid-cols-2"
+      : "grid gap-6 sm:grid-cols-2 lg:grid-cols-4";
+
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className={gridClass}>
       {merged.map((post) => {
         const localOnly = (post as any).localOnly;
         const href = localOnly
