@@ -15,6 +15,9 @@ import { cn } from "@/lib/utils";
 import { ArticleComments } from "@/components/tasks/article-comments";
 import { SchemaJsonLd } from "@/components/seo/schema-jsonld";
 import { RichContent, formatRichHtml } from "@/components/shared/rich-content";
+import { getFactoryState } from "@/design/factory/get-factory-state";
+import { getProductKind } from "@/design/factory/get-product-kind";
+import { DirectoryTaskDetailPage } from "@/design/products/directory/task-detail-page";
 
 type PostContent = {
   category?: string;
@@ -216,6 +219,28 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
     ],
   };
   const schemaPayload = articleSchema ? [articleSchema, breadcrumbSchema] : breadcrumbSchema;
+  const { recipe } = getFactoryState();
+  const productKind = getProductKind(recipe);
+
+  if (productKind === "directory" && (task === "listing" || task === "classified" || task === "profile")) {
+    return (
+      <div className="min-h-screen bg-[#f8fbff]">
+        <NavbarShell />
+        <DirectoryTaskDetailPage
+          task={task}
+          taskLabel={taskConfig?.label || task}
+          taskRoute={taskConfig?.route || "/"}
+          post={post}
+          description={description}
+          category={category}
+          images={images}
+          mapEmbedUrl={mapEmbedUrl}
+          related={related}
+        />
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

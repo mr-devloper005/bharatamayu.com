@@ -2,21 +2,72 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Search, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, Search, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ContentImage } from "@/components/shared/content-image";
-import { SITE_CONFIG } from "@/lib/site-config";
+import { SITE_CONFIG, type TaskConfig } from "@/lib/site-config";
 import { siteContent } from "@/config/site.content";
+import { SITE_THEME } from "@/config/site.theme";
 
 const FALLBACK_IMAGE = "/placeholder.svg?height=1400&width=2400";
 
-export function HeroSection({ images }: { images: string[] }) {
+const heroClasses = {
+  'search-first': {
+    section: 'border-b border-slate-200 bg-[linear-gradient(180deg,#edf5ff_0%,#f8fbff_42%,#ffffff_100%)] text-slate-950',
+    overlay: 'bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_26%),radial-gradient(circle_at_top_right,rgba(15,23,42,0.12),transparent_26%)]',
+    grid: 'lg:grid-cols-[1.08fr_0.92fr]',
+    card: 'border border-white/70 bg-white/80 shadow-[0_28px_90px_rgba(15,23,42,0.12)]',
+    title: 'text-slate-950',
+    body: 'text-slate-600',
+    badge: 'bg-slate-950 text-white',
+    primary: 'bg-slate-950 text-white hover:bg-slate-800',
+    secondary: 'border border-slate-200 bg-white text-slate-900 hover:bg-slate-100',
+  },
+  'spotlight-split': {
+    section: 'border-b border-[rgba(123,72,35,0.14)] bg-[linear-gradient(180deg,#1f1613_0%,#2d1d17_50%,#fff7ed_100%)] text-white',
+    overlay: 'bg-[linear-gradient(90deg,rgba(20,12,9,0.88)_0%,rgba(32,19,14,0.66)_45%,rgba(255,247,237,0)_100%)]',
+    grid: 'lg:grid-cols-[1.14fr_0.86fr]',
+    card: 'border border-white/10 bg-white/8 shadow-[0_28px_100px_rgba(18,9,4,0.4)] backdrop-blur-md',
+    title: 'text-white',
+    body: 'text-amber-100/78',
+    badge: 'bg-[#ffdd9c] text-[#2a160c]',
+    primary: 'bg-[#ffdd9c] text-[#2a160c] hover:bg-[#ffd17d]',
+    secondary: 'border border-white/18 bg-white/10 text-white hover:bg-white/16',
+  },
+  'gallery-mosaic': {
+    section: 'border-b border-slate-800 bg-[linear-gradient(180deg,#07111f_0%,#0c172b_45%,#101c31_100%)] text-white',
+    overlay: 'bg-[radial-gradient(circle_at_top_left,rgba(110,231,183,0.16),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.16),transparent_26%)]',
+    grid: 'lg:grid-cols-[0.95fr_1.05fr]',
+    card: 'border border-white/10 bg-slate-900/65 shadow-[0_30px_110px_rgba(15,23,42,0.45)] backdrop-blur-xl',
+    title: 'text-white',
+    body: 'text-slate-300',
+    badge: 'bg-[#8df0c8] text-[#07111f]',
+    primary: 'bg-[#8df0c8] text-[#07111f] hover:bg-[#77dfb8]',
+    secondary: 'border border-white/18 bg-white/6 text-white hover:bg-white/12',
+  },
+  'catalog-promo': {
+    section: 'border-b border-[rgba(66,74,42,0.14)] bg-[linear-gradient(180deg,#f6f6ee_0%,#f4f7df_35%,#ffffff_100%)] text-[#18210f]',
+    overlay: 'bg-[radial-gradient(circle_at_top_right,rgba(163,230,53,0.16),transparent_22%),radial-gradient(circle_at_top_left,rgba(34,197,94,0.14),transparent_24%)]',
+    grid: 'lg:grid-cols-[1.12fr_0.88fr]',
+    card: 'border border-[#dce5c2] bg-white/90 shadow-[0_28px_80px_rgba(64,76,34,0.12)]',
+    title: 'text-[#18210f]',
+    body: 'text-[#5c684b]',
+    badge: 'bg-[#18210f] text-[#ebf5d9]',
+    primary: 'bg-[#18210f] text-[#ebf5d9] hover:bg-[#25331a]',
+    secondary: 'border border-[#dce5c2] bg-white text-[#18210f] hover:bg-[#f4f7df]',
+  },
+} as const;
+
+export function HeroSection({ images, tasks }: { images: string[]; tasks: TaskConfig[] }) {
   const slides = useMemo(() => {
     const valid = images.filter(Boolean);
-    return valid.length ? valid.slice(0, 3) : [FALLBACK_IMAGE];
+    return valid.length ? valid.slice(0, 4) : [FALLBACK_IMAGE];
   }, [images]);
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const primaryTask = tasks.find((task) => task.key === SITE_THEME.home.primaryTask) || tasks[0];
+  const featuredTasks = tasks.filter((task) => SITE_THEME.home.featuredTaskKeys.includes(task.key)).slice(0, 3);
+  const palette = heroClasses[SITE_THEME.hero.variant];
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -27,128 +78,112 @@ export function HeroSection({ images }: { images: string[] }) {
   }, [slides]);
 
   return (
-    <section className="relative overflow-hidden border-b border-[rgba(110,26,55,0.12)] bg-[#160912] text-white">
+    <section className={`relative overflow-hidden ${palette.section}`}>
       <div className="absolute inset-0">
         <ContentImage
           key={slides[activeIndex]}
           src={slides[activeIndex]}
-          alt={`Latest featured visual ${activeIndex + 1} from ${SITE_CONFIG.name}`}
+          alt={`Featured visual ${activeIndex + 1} from ${SITE_CONFIG.name}`}
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover opacity-35"
           intrinsicWidth={1600}
           intrinsicHeight={900}
         />
       </div>
+      <div className={`absolute inset-0 ${palette.overlay}`} />
 
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(22,9,18,0.92)_0%,rgba(22,9,18,0.76)_42%,rgba(22,9,18,0.78)_100%)]" />
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[rgba(247,241,230,1)] via-[rgba(247,241,230,0.68)] to-transparent" />
-
-      <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-12 sm:px-6 lg:px-8 lg:pb-28 lg:pt-16">
-        <div className="grid items-center gap-14 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className={`grid items-center gap-12 ${palette.grid}`}>
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/82 backdrop-blur-md">
-              <Sparkles className="h-4 w-4 text-[#72BAA9]" />
-              {siteContent.hero.badge}
+            <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] ${palette.badge}`}>
+              <Sparkles className="h-3.5 w-3.5" />
+              {SITE_THEME.hero.eyebrow}
             </div>
-
-            <h1 className="mt-6 text-balance text-5xl font-semibold leading-[0.95] text-white sm:text-6xl lg:text-7xl">
-              {siteContent.hero.title[0]}
-              <span className="block text-[#D5E7B5]">{siteContent.hero.title[1]}</span>
+            <h1 className={`mt-6 text-5xl font-semibold tracking-[-0.06em] sm:text-6xl ${palette.title}`}>
+              {siteContent.hero.title[0]} <span className="block opacity-90">{siteContent.hero.title[1]}</span>
             </h1>
+            <p className={`mt-6 max-w-2xl text-base leading-8 sm:text-lg ${palette.body}`}>{siteContent.hero.description}</p>
 
-            <p className="mt-6 max-w-2xl text-base leading-8 text-white/78 sm:text-lg">
-              {siteContent.hero.description}
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button
-                asChild
-                size="lg"
-                className="h-12 rounded-full bg-[#AE2448] px-7 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(174,36,72,0.34)] hover:bg-[#8e1b3b]"
-              >
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button asChild size="lg" className={`rounded-full px-6 ${palette.primary}`}>
                 <Link href={siteContent.hero.primaryCta.href}>
                   {siteContent.hero.primaryCta.label}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="h-12 rounded-full border-white/18 bg-white/8 px-7 text-sm font-semibold text-white backdrop-blur-md hover:bg-white/12 hover:text-white"
-              >
+              <Button asChild size="lg" variant="outline" className={`rounded-full px-6 ${palette.secondary}`}>
                 <Link href={siteContent.hero.secondaryCta.href}>{siteContent.hero.secondaryCta.label}</Link>
               </Button>
             </div>
 
-            <div className="mt-10 max-w-3xl rounded-[2rem] border border-white/10 bg-white/95 p-3 shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-              <form action="/search" className="flex flex-col gap-3 md:flex-row md:items-center">
-                <div className="relative flex-1">
-                  <Search className="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#8d6b73]" />
-                  <input
-                    name="q"
-                    placeholder={siteContent.hero.searchPlaceholder}
-                    className="h-15 w-full rounded-[1.5rem] border border-[rgba(110,26,55,0.12)] bg-[#fffaf6] pl-14 pr-4 text-base text-[#32111d] outline-none transition placeholder:text-[#9d8890] focus:border-[#AE2448]/40"
-                  />
+            <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-[1.1fr_0.9fr]">
+              <div className={`flex items-center gap-3 rounded-[1.6rem] p-4 ${palette.card}`}>
+                <div className="rounded-full bg-white/10 p-3 text-current">
+                  <Search className="h-5 w-5" />
                 </div>
-                <Button
-                  type="submit"
-                  className="h-15 rounded-[1.5rem] bg-[#72BAA9] px-8 text-base font-semibold text-[#1e2020] hover:bg-[#5fa896]"
-                >
-                  Search
-                </Button>
-              </form>
-            </div>
-
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/72">
-              <span className="font-semibold uppercase tracking-[0.22em] text-white/86">{siteContent.hero.focusLabel}</span>
-              {SITE_CONFIG.tasks
-                .filter((task) => task.enabled)
-                .slice(0, 5)
-                .map((task) => (
-                  <Link key={task.key} href={task.route} className="transition hover:text-[#D5E7B5]">
-                    {task.label}
-                  </Link>
-                ))}
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] opacity-70">Primary task</p>
+                  <p className="mt-1 text-lg font-semibold">{primaryTask?.label || SITE_CONFIG.name}</p>
+                  <p className="mt-1 text-sm opacity-75">{primaryTask?.description}</p>
+                </div>
+              </div>
+              <div className={`flex items-center gap-3 rounded-[1.6rem] p-4 ${palette.card}`}>
+                <div className="rounded-full bg-white/10 p-3 text-current">
+                  <Compass className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] opacity-70">Explore flow</p>
+                  <p className="mt-1 text-lg font-semibold">{featuredTasks.length} highlighted surfaces</p>
+                  <p className="mt-1 text-sm opacity-75">Built for discovery without repeating the same layout rhythm.</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="relative lg:pl-8">
-            <div className="paper-panel relative overflow-hidden rounded-[2rem] p-4 md:p-5">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] bg-[#2b0f19]">
-                <ContentImage
-                  src={slides[activeIndex]}
-                  alt={`Featured slide ${activeIndex + 1}`}
-                  fill
-                  sizes="(max-width: 1024px) 90vw, 38vw"
-                  className="object-cover"
-                  intrinsicWidth={960}
-                  intrinsicHeight={1200}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(22,9,18,0.95)] via-[rgba(22,9,18,0.3)] to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-left">
-                  <div className="inline-flex items-center rounded-full bg-white/12 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-md">
-                    {siteContent.hero.featureCardBadge}
-                  </div>
-                  <p className="mt-4 max-w-xs text-2xl font-semibold leading-tight text-white sm:text-3xl">
-                    {siteContent.hero.featureCardTitle}
-                  </p>
-                  <p className="mt-3 max-w-sm text-sm leading-6 text-white/72">
-                    {siteContent.hero.featureCardDescription}
-                  </p>
+          <div className="space-y-4">
+            <div className={`overflow-hidden rounded-[2rem] p-4 sm:p-5 ${palette.card}`}>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="relative min-h-[220px] overflow-hidden rounded-[1.5rem] sm:min-h-[280px]">
+                  <ContentImage
+                    src={slides[(activeIndex + 1) % slides.length] || slides[0]}
+                    alt={`Supporting visual from ${SITE_CONFIG.name}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                    intrinsicWidth={1000}
+                    intrinsicHeight={1200}
+                  />
+                </div>
+                <div className="flex flex-col justify-between gap-4">
+                  {featuredTasks.map((task, index) => (
+                    <div key={task.key} className="rounded-[1.4rem] border border-white/10 bg-black/10 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-65">Lane {index + 1}</p>
+                          <p className="mt-2 text-xl font-semibold">{task.label}</p>
+                        </div>
+                        <Star className="h-4 w-4 opacity-70" />
+                      </div>
+                      <p className="mt-3 text-sm leading-6 opacity-75">{task.description}</p>
+                      <Link href={task.route} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold underline underline-offset-4">
+                        Open section
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
             {slides.length > 1 ? (
-              <div className="mt-5 flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 {slides.map((_, index) => (
                   <span
                     key={index}
                     className={`h-2.5 rounded-full transition-all duration-300 ${
-                      index === activeIndex ? "w-10 bg-[#AE2448]" : "w-2.5 bg-white/40"
+                      index === activeIndex ? 'w-10 bg-primary' : 'w-2.5 bg-current/30'
                     }`}
                   />
                 ))}
