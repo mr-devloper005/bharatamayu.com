@@ -29,6 +29,7 @@ const footerLinks = {
     { name: 'Careers', href: '/careers' },
     { name: 'Blog', href: '/blog' },
     { name: 'Press', href: '/press' },
+    { name: 'Contact Us', href: '/contact' },
   ],
   resources: [
     { name: 'Help Center', href: '/help' },
@@ -69,6 +70,9 @@ export function Footer() {
                 {task.label}
               </Link>
             ))}
+            <Link href="/contact" className="rounded-lg border border-[#d7deca] bg-white px-3 py-2 text-sm font-medium text-[#1f2617] hover:bg-[#ebefdf]">
+              Contact Us
+            </Link>
           </div>
         </div>
       </footer>
@@ -91,6 +95,9 @@ export function Footer() {
                 </div>
               </div>
               <p className="mt-5 max-w-md text-sm leading-7 text-slate-300">{SITE_CONFIG.description}</p>
+              <Link href="/contact" className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/14 bg-white/6 px-4 py-2.5 text-sm font-semibold text-slate-100 hover:bg-white/12">
+                Contact Us
+              </Link>
               {primaryTask ? (
                 <Link href={primaryTask.route} className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#8df0c8] px-4 py-2.5 text-sm font-semibold text-[#07111f] hover:bg-[#77dfb8]">
                   Explore {primaryTask.label}
@@ -145,6 +152,9 @@ export function Footer() {
               </div>
               <h3 className="mt-5 text-3xl font-semibold tracking-[-0.04em] text-[#E0E0E0]">{SITE_CONFIG.name}</h3>
               <p className="mt-4 max-w-md text-sm leading-7 text-[#E0E0E0]/72">{SITE_CONFIG.description}</p>
+              <Link href="/contact" className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#E0E0E0]/22 px-4 py-2.5 text-sm font-semibold text-[#E0E0E0] hover:bg-[#E0E0E0]/10">
+                Contact Us
+              </Link>
             </div>
             <div>
               <h4 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#A2C11C]/85">Sections</h4>
@@ -186,6 +196,9 @@ export function Footer() {
               </div>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-7 text-slate-600">{SITE_CONFIG.description}</p>
+            <Link href="/contact" className="mt-5 inline-flex rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+              Contact Us
+            </Link>
           </div>
           {(['platform', 'company', 'resources', 'legal'] as const).map((section) => (
             <div key={section}>

@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Menu, X, User, FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, ChevronRight, Sparkles, MapPin, Plus, Bookmark } from 'lucide-react'
+import { Search, Menu, X, User, FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, ChevronRight, MapPin, Plus, Bookmark } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
 import { SITE_CONFIG, type TaskKey } from '@/lib/site-config'
@@ -143,13 +143,6 @@ export function Navbar() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            {primaryTask ? (
-              <Link href={primaryTask.route} className="hidden items-center gap-2 rounded-full border border-current/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] opacity-75 md:inline-flex">
-                <Sparkles className="h-3.5 w-3.5" />
-                {primaryTask.label}
-              </Link>
-            ) : null}
-
             {isAuthenticated ? (
               <NavbarAuthControls />
             ) : (
@@ -275,22 +268,6 @@ export function Navbar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          {primaryTask && (recipe.navbar === 'utility-bar' || recipe.navbar === 'floating-bar') ? (
-            <Link href={primaryTask.route} className="hidden items-center gap-2 rounded-full border border-current/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] opacity-80 md:inline-flex">
-              <Sparkles className="h-3.5 w-3.5" />
-              {primaryTask.label}
-            </Link>
-          ) : null}
-          {primaryTask && recipe.navbar === 'editorial-bar' ? (
-            <Link
-              href={primaryTask.route}
-              className="hidden items-center gap-2 rounded-full border border-[#A2C11C]/35 bg-[#283739]/40 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#E0E0E0]/90 md:inline-flex"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-[#A2C11C]" />
-              {primaryTask.label}
-            </Link>
-          ) : null}
-
           <Button variant="ghost" size="icon" asChild className={cn('hidden rounded-full md:flex', isEditorial && 'text-[#E0E0E0] hover:bg-[#283739]/55 hover:text-[#E0E0E0]')}>
             <Link href="/search">
               <Search className="h-5 w-5" />
