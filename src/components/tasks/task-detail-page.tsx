@@ -1,7 +1,7 @@
 import { ContentImage } from "@/components/shared/content-image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Globe, Phone, Tag, Mail } from "lucide-react";
+import { ArrowUpRight, BookmarkCheck, ExternalLink, MapPin, Globe, Phone, Tag, Mail } from "lucide-react";
 import { NavbarShell } from "@/components/shared/navbar-shell";
 import { Footer } from "@/components/shared/footer";
 import { TaskPostCard } from "@/components/shared/task-post-card";
@@ -305,28 +305,109 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
 
             {!isArticle ? (
               <>
-                {!isBookmark ? (
+                {isBookmark ? (
+                  <section className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_24px_70px_rgba(40,55,57,0.12)]">
+                    <div className="h-3 bg-[linear-gradient(90deg,var(--bm-teal-dark),var(--bm-teal),var(--bm-lime))]" />
+                    <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
+                      <div className="border-b border-border/70 bg-[linear-gradient(180deg,rgba(224,224,224,0.55),rgba(255,255,255,0.9))] p-5 sm:p-7 lg:border-b-0 lg:border-r">
+                        <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/80 bg-muted shadow-lg shadow-secondary/10">
+                          <ContentImage
+                            src={images[0]}
+                            alt={`${post.title} bookmark preview`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 90vw, 560px"
+                            intrinsicWidth={1200}
+                            intrinsicHeight={750}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+                          <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/90 px-3 py-1 text-xs font-semibold uppercase text-foreground shadow-sm">
+                            <BookmarkCheck className="h-4 w-4 text-primary" />
+                            Saved resource
+                          </div>
+                        </div>
+
+                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-lg border border-border/80 bg-white/75 px-4 py-3">
+                            <p className="text-xs font-semibold uppercase text-muted-foreground">Category</p>
+                            <p className="mt-1 text-sm font-semibold text-foreground">{category}</p>
+                          </div>
+                          {content.website ? (
+                            <div className="min-w-0 rounded-lg border border-border/80 bg-white/75 px-4 py-3">
+                              <p className="text-xs font-semibold uppercase text-muted-foreground">Source</p>
+                              <p className="mt-1 truncate text-sm font-semibold text-foreground">
+                                {content.website.replace(/^https?:\/\//, "").replace(/\/.*$/, "")}
+                              </p>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      <div className="p-6 sm:p-8 lg:p-10">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-semibold uppercase text-foreground">
+                          <ExternalLink className="h-4 w-4 text-primary" />
+                          Social bookmark
+                        </div>
+                        <h1 className="mt-5 text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+                          {post.title}
+                        </h1>
+                        <RichContent
+                          html={descriptionHtml}
+                          className="mt-5 max-w-3xl text-lg leading-8 text-foreground/90 prose-p:my-4"
+                        />
+
+                        {postTags.length ? (
+                          <div className="mt-6 flex flex-wrap gap-2">
+                            {postTags.slice(0, 6).map((tag) => (
+                              <Badge key={tag} variant="outline" className="rounded-md">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : null}
+
+                        <div className="mt-8 flex flex-wrap gap-3">
+                          {content.website ? (
+                            <Button asChild size="lg" className="rounded-lg px-5 text-base shadow-sm">
+                              <a href={content.website} target="_blank" rel="noreferrer">
+                                Open Bookmark
+                                <ArrowUpRight className="h-4 w-4" />
+                              </a>
+                            </Button>
+                          ) : null}
+                          {taskConfig?.route ? (
+                            <Button asChild variant="outline" size="lg" className="rounded-lg px-5 text-base">
+                              <Link href={taskConfig.route}>Browse More</Link>
+                            </Button>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                ) : (
                   <div className={cn(isClassified ? "w-full" : "")}>
                     <TaskImageCarousel images={images} />
                   </div>
-                ) : null}
+                )}
 
-                <div className={cn(isClassified ? "mx-auto w-full max-w-4xl" : "mt-6")}>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                    <Badge variant="secondary" className="inline-flex items-center gap-1">
-                      <Tag className="h-3.5 w-3.5" />
-                      {category}
-                    </Badge>
-                    {location && (
-                      <span className="inline-flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {location}
-                      </span>
-                    )}
+                {!isBookmark ? (
+                  <div className={cn(isClassified ? "mx-auto w-full max-w-4xl" : "mt-6")}>
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                      <Badge variant="secondary" className="inline-flex items-center gap-1">
+                        <Tag className="h-3.5 w-3.5" />
+                        {category}
+                      </Badge>
+                      {location && (
+                        <span className="inline-flex items-center gap-1">
+                          <MapPin className="h-4 w-4" />
+                          {location}
+                        </span>
+                      )}
+                    </div>
+                    <h1 className="mt-4 text-3xl font-semibold text-foreground">{post.title}</h1>
+                    <RichContent html={descriptionHtml} className="mt-3 max-w-3xl" />
                   </div>
-                  <h1 className="mt-4 text-3xl font-semibold text-foreground">{post.title}</h1>
-                  <RichContent html={descriptionHtml} className="mt-3 max-w-3xl" />
-                </div>
+                ) : null}
               </>
             ) : null}
 
