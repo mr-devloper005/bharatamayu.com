@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight, BadgeCheck, Globe2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/shared/footer";
 import { NavbarShell } from "@/components/shared/navbar-shell";
@@ -111,37 +112,60 @@ export default async function ProfileDetailPage({ params }: { params: Promise<{ 
       <NavbarShell />
       <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-10 sm:px-6 lg:px-8">
         <SchemaJsonLd data={breadcrumbData} />
-        <section className="rounded-3xl border border-border/60 bg-white/90 p-8 shadow-sm md:p-12">
-          <div className="grid gap-8 md:grid-cols-[200px_1fr] md:items-start">
-            <div className="flex justify-center md:justify-start">
-              <div className="relative h-36 w-36 overflow-hidden rounded-full border border-border/70 bg-muted">
-                {logoUrl ? (
-                  <ContentImage src={logoUrl} alt={post.title} fill className="object-cover" sizes="144px" intrinsicWidth={144} intrinsicHeight={144} />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-muted-foreground">
-                    {post.title.slice(0, 1).toUpperCase()}
+        <section className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_24px_70px_rgba(40,55,57,0.12)]">
+          <div className="h-3 bg-[linear-gradient(90deg,var(--bm-teal-dark),var(--bm-teal),var(--bm-lime))]" />
+          <div className="grid lg:grid-cols-[320px_1fr]">
+            <aside className="border-b border-border/70 bg-[linear-gradient(180deg,rgba(224,224,224,0.52),rgba(255,255,255,0.88))] p-6 sm:p-8 lg:border-b-0 lg:border-r">
+              <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-2xl" />
+                  <div className="relative h-40 w-40 overflow-hidden rounded-2xl border border-white/80 bg-muted shadow-lg shadow-secondary/10">
+                    {logoUrl ? (
+                      <ContentImage src={logoUrl} alt={post.title} fill className="object-cover" sizes="160px" intrinsicWidth={160} intrinsicHeight={160} />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-5xl font-semibold text-muted-foreground">
+                        {post.title.slice(0, 1).toUpperCase()}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground sm:text-4xl">{brandName}</h1>
-              {domain ? (
-                <p className="mt-1 text-sm font-medium text-muted-foreground">{domain}</p>
-              ) : null}
-              <article
-                className="article-content prose prose-slate mt-6 max-w-2xl text-base leading-relaxed prose-p:my-4 prose-a:text-primary prose-a:underline prose-strong:font-semibold"
-                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-              />
-              {website ? (
-                <div className="mt-8">
-                  <Button asChild size="lg" className="px-7 text-base">
+                </div>
+
+                <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-semibold uppercase text-foreground">
+                  <BadgeCheck className="h-4 w-4 text-primary" />
+                  Profile card
+                </div>
+
+                {domain ? (
+                  <div className="mt-5 flex max-w-full items-center gap-2 rounded-lg border border-border/80 bg-white/70 px-3 py-2 text-sm font-medium text-muted-foreground shadow-sm">
+                    <Globe2 className="h-4 w-4 shrink-0 text-secondary" />
+                    <span className="truncate">{domain}</span>
+                  </div>
+                ) : null}
+
+                {website ? (
+                  <Button asChild size="lg" className="mt-6 w-full max-w-[240px] justify-between rounded-lg px-5 text-base shadow-sm lg:max-w-none">
                     <Link href={website} target="_blank" rel="noopener noreferrer">
                       Visit Official Site
+                      <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </Button>
-                </div>
-              ) : null}
+                ) : null}
+              </div>
+            </aside>
+
+            <div className="p-6 sm:p-8 lg:p-12">
+              <div className="max-w-3xl">
+                <p className="text-sm font-semibold uppercase text-secondary">Featured profile</p>
+                <h1 className="mt-3 text-4xl font-bold leading-tight text-foreground sm:text-5xl">{brandName}</h1>
+              </div>
+
+              <div className="mt-8 border-l-4 border-primary pl-5">
+                <p className="text-sm font-semibold uppercase text-muted-foreground">About</p>
+              </div>
+              <article
+                className="article-content prose prose-slate mt-4 max-w-3xl text-lg leading-8 text-foreground/90 prose-p:my-4 prose-a:text-primary prose-a:underline prose-strong:font-semibold"
+                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+              />
             </div>
           </div>
         </section>
