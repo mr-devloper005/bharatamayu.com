@@ -10,6 +10,8 @@ import { buildPostUrl } from "@/lib/task-data";
 import { buildPostMetadata, buildTaskMetadata } from "@/lib/seo";
 import { fetchTaskPostBySlug, fetchTaskPosts } from "@/lib/task-data";
 import { SITE_CONFIG } from "@/lib/site-config";
+import { MapPin } from "lucide-react";
+import { ShareButton } from "@/components/profile/share-button";
 
 export const revalidate = 3;
 
@@ -79,6 +81,16 @@ export default async function ProfileDetailPage({ params }: { params: Promise<{ 
     post.summary ||
     "Profile details will appear here once available.";
   const descriptionHtml = formatRichHtml(description);
+  const category = (content.category as string | undefined) || "General";
+  const episodes = (content.episodes as number | undefined) || 0;
+  const location = (content.location as string | undefined) || "United Kingdom";
+  const userId = (content.userId as string | undefined) || post.id;
+  const posts = (content.posts as number | undefined) || 0;
+  const following = (content.following as number | undefined) || 0;
+  const followers = (content.followers as number | undefined) || 0;
+  const learning = (content.learning as string[] | undefined) || ["English"];
+  const languages = (content.languages as Array<{name: string, level: string}> | undefined) || [{name: "Hawaiian Pidgin (Hawaiian Creole English)", level: "Native"}];
+  const interests = (content.interests as string[] | undefined) || ["Reading"];
   const suggestedArticles = await fetchTaskPosts("article", 6);
   const baseUrl = SITE_CONFIG.baseUrl.replace(/\/$/, "");
   const breadcrumbData = {
@@ -111,38 +123,70 @@ export default async function ProfileDetailPage({ params }: { params: Promise<{ 
       <NavbarShell />
       <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-10 sm:px-6 lg:px-8">
         <SchemaJsonLd data={breadcrumbData} />
-        <section className="rounded-3xl border border-border/60 bg-white/90 p-8 shadow-sm md:p-12">
-          <div className="grid gap-8 md:grid-cols-[200px_1fr] md:items-start">
-            <div className="flex justify-center md:justify-start">
-              <div className="relative h-36 w-36 overflow-hidden rounded-full border border-border/70 bg-muted">
-                {logoUrl ? (
-                  <ContentImage src={logoUrl} alt={post.title} fill className="object-cover" sizes="144px" intrinsicWidth={144} intrinsicHeight={144} />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-3xl font-semibold text-muted-foreground">
-                    {post.title.slice(0, 1).toUpperCase()}
-                  </div>
-                )}
+        <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
+          {/* Left Column - Profile Summary */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-border bg-muted">
+                  {logoUrl ? (
+                    <ContentImage src={logoUrl} alt={post.title} fill className="object-cover" sizes="128px" intrinsicWidth={128} intrinsicHeight={128} />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-4xl font-semibold text-muted-foreground">
+                      {post.title.slice(0, 1).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <div className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold text-white border-2 border-card">
+                  UK
+                </div>
+              </div>
+              
+              <h1 className="mt-4 text-xl font-bold text-foreground">{brandName}</h1>
+              
+              <div className="mt-4 w-full space-y-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>From {location}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>Living in {location} (08:33 UTC+00:00)</span>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex w-full gap-2">
+                <Button asChild className="flex-1 bg-red-600 hover:bg-red-700 text-white">
+                  <Link href="/login">
+                    Follow
+                  </Link>
+                </Button>
+                <ShareButton />
               </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground sm:text-4xl">{brandName}</h1>
-              {domain ? (
-                <p className="mt-1 text-sm font-medium text-muted-foreground">{domain}</p>
-              ) : null}
-              <article
-                className="article-content prose prose-slate mt-6 max-w-2xl text-base leading-relaxed prose-p:my-4 prose-a:text-primary prose-a:underline prose-strong:font-semibold"
-                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-              />
-              {website ? (
-                <div className="mt-8">
-                  <Button asChild size="lg" className="px-7 text-base">
-                    <Link href={website} target="_blank" rel="noopener noreferrer">
-                      Visit Official Site
-                    </Link>
-                  </Button>
-                </div>
-              ) : null}
-            </div>
+          </div>
+          
+          {/* Right Column - Profile Details */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-foreground">Profile</h2>
+            
+            <article
+              className="article-content prose prose-slate mt-4 max-w-2xl text-sm leading-relaxed prose-p:my-3 prose-a:text-primary prose-a:underline prose-strong:font-semibold"
+              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+            />
+            
+            {website ? (
+              <div className="mt-4">
+                <a
+                  href={website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:underline break-all"
+                >
+                  {website}
+                </a>
+              </div>
+            ) : null}
           </div>
         </section>
 
