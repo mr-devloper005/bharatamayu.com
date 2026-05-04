@@ -11,6 +11,8 @@ import { buildPostUrl } from "@/lib/task-data";
 import { buildPostMetadata, buildTaskMetadata } from "@/lib/seo";
 import { fetchTaskPostBySlug, fetchTaskPosts } from "@/lib/task-data";
 import { SITE_CONFIG } from "@/lib/site-config";
+import { MapPin } from "lucide-react";
+import { ShareButton } from "@/components/profile/share-button";
 
 export const revalidate = 3;
 
@@ -80,6 +82,16 @@ export default async function ProfileDetailPage({ params }: { params: Promise<{ 
     post.summary ||
     "Profile details will appear here once available.";
   const descriptionHtml = formatRichHtml(description);
+  const category = (content.category as string | undefined) || "General";
+  const episodes = (content.episodes as number | undefined) || 0;
+  const location = (content.location as string | undefined) || "United Kingdom";
+  const userId = (content.userId as string | undefined) || post.id;
+  const posts = (content.posts as number | undefined) || 0;
+  const following = (content.following as number | undefined) || 0;
+  const followers = (content.followers as number | undefined) || 0;
+  const learning = (content.learning as string[] | undefined) || ["English"];
+  const languages = (content.languages as Array<{name: string, level: string}> | undefined) || [{name: "Hawaiian Pidgin (Hawaiian Creole English)", level: "Native"}];
+  const interests = (content.interests as string[] | undefined) || ["Reading"];
   const suggestedArticles = await fetchTaskPosts("article", 6);
   const baseUrl = SITE_CONFIG.baseUrl.replace(/\/$/, "");
   const breadcrumbData = {
