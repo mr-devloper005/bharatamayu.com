@@ -1,7 +1,9 @@
+'use client'
+
 import { ContentImage } from "@/components/shared/content-image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, BookmarkCheck, ExternalLink, MapPin, Globe, Phone, Tag, Mail } from "lucide-react";
+import { ArrowUpRight, BookmarkCheck, ExternalLink, MapPin, Globe, Phone, Tag, Mail, Share2, Plus, Check } from "lucide-react";
 import { NavbarShell } from "@/components/shared/navbar-shell";
 import { Footer } from "@/components/shared/footer";
 import { TaskPostCard } from "@/components/shared/task-post-card";
@@ -18,6 +20,7 @@ import { RichContent, formatRichHtml } from "@/components/shared/rich-content";
 import { getFactoryState } from "@/design/factory/get-factory-state";
 import { getProductKind } from "@/design/factory/get-product-kind";
 import { DirectoryTaskDetailPage } from "@/design/products/directory/task-detail-page";
+import { useState, useEffect } from "react";
 
 type PostContent = {
   category?: string;
@@ -122,19 +125,93 @@ const buildMapEmbedUrl = (
   return null;
 };
 
-export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: string }) {
+export function TaskDetailPage({ task, slug }: { task: TaskKey; slug: string }) {
+  const [shareLabel, setShareLabel] = useState('Share');
+  const [isPresented, setIsPresented] = useState(false);
+  const [post, setPost] = useState<SitePost | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [related, setRelated] = useState<SitePost[]>([]);
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareLabel('Copied');
+      setTimeout(() => setShareLabel('Share'), 1500);
+    } catch {
+      setShareLabel('Copy failed');
+      setTimeout(() => setShareLabel('Share'), 1500);
+    }
+  };
+
+  const handlePresent = () => {
+    setIsPresented(!isPresented);
+    // Add presentation mode logic here
+    if (!isPresented) {
+      document.body.classList.add('presentation-mode');
+    } else {
+      document.body.classList.remove('presentation-mode');
+    }
+  };
+
+  const handleCreateOwn = () => {
+    // Redirect to login page
+    window.location.href = '/login';
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const taskConfig = getTaskConfig(task);
+        const postData = await fetchTaskPostBySlug(task, slug);
+        
+        if (!postData) {
+          notFound();
+          return;
+        }
+        
+        setPost(postData);
+        
+        // Load related posts
+        const relatedPosts = await fetchTaskPosts(task, 6);
+        const content = getContent(postData);
+        const filteredRelated = relatedPosts
+          .filter((item) => item.slug !== postData.slug)
+          .filter((item) => {
+            if (!content.category) return true;
+            const itemContent = getContent(item);
+            return itemContent.category === content.category;
+          })
+          .slice(0, 3);
+        
+        setRelated(filteredRelated);
+      } catch (error) {
+        console.warn("Failed to load post detail", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [task, slug]);
+
+  if (loading || !post) {
+    return (
+      <div className="min-h-screen bg-background">
+        <NavbarShell />
+        <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="animate-pulse">
+            <div className="h-8 w-48 bg-muted rounded mb-6"></div>
+            <div className="h-64 bg-muted rounded-2xl mb-8"></div>
+            <div className="h-4 w-full bg-muted rounded mb-2"></div>
+            <div className="h-4 w-3/4 bg-muted rounded"></div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   const taskConfig = getTaskConfig(task);
-  let post: SitePost | null = null;
-  try {
-    post = await fetchTaskPostBySlug(task, slug);
-  } catch (error) {
-    console.warn("Failed to load post detail", error);
-  }
-
-  if (!post) {
-    notFound();
-  }
-
   const content = getContent(post);
   const isClassified = task === "classified";
   const isArticle = task === "article";
@@ -163,14 +240,6 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
   const mapEmbedUrl = buildMapEmbedUrl(content.latitude, content.longitude, location);
   const isBookmark = task === "sbm" || task === "social";
   const hideSidebar = isClassified || isArticle || task === "image" || isBookmark;
-  const related = (await fetchTaskPosts(task, 6))
-    .filter((item) => item.slug !== post.slug)
-    .filter((item) => {
-      if (!content.category) return true;
-      const itemContent = getContent(item);
-      return itemContent.category === content.category;
-    })
-    .slice(0, 3);
   const articleUrl = `${SITE_CONFIG.baseUrl.replace(/\/$/, "")}${taskConfig?.route || "/articles"}/${post.slug}`;
   const articleImage = absoluteUrl(images[0]) || absoluteUrl(SITE_CONFIG.defaultOgImage);
   const articleSchema = isArticle
@@ -306,28 +375,51 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
             {!isArticle ? (
               <>
                 {isBookmark ? (
-                  <section className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_24px_70px_rgba(40,55,57,0.12)]">
-                    <div className="h-3 bg-[linear-gradient(90deg,var(--bm-teal-dark),var(--bm-teal),var(--bm-lime))]" />
-                    <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-                      <div className="border-b border-border/70 bg-[linear-gradient(180deg,rgba(224,224,224,0.55),rgba(255,255,255,0.9))] p-5 sm:p-7 lg:border-b-0 lg:border-r">
-                        <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/80 bg-muted shadow-lg shadow-secondary/10">
-                          <ContentImage
-                            src={images[0]}
-                            alt={`${post.title} bookmark preview`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 1024px) 90vw, 560px"
-                            intrinsicWidth={1200}
-                            intrinsicHeight={750}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-                          <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/90 px-3 py-1 text-xs font-semibold uppercase text-foreground shadow-sm">
-                            <BookmarkCheck className="h-4 w-4 text-primary" />
-                            Saved resource
+                  <>
+                    {/* Header Section */}
+                    <header className="mb-8">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg">
+                              {articleAuthor.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <h2 className="text-lg font-semibold text-foreground">{articleAuthor}</h2>
+                              <p className="text-sm text-muted-foreground">Content Creator</p>
+                            </div>
                           </div>
                         </div>
+                        <div className="flex items-center gap-3">
+                          <Button variant="outline" size="sm" className="gap-2" onClick={handleShare}>
+                            {shareLabel === 'Copied' ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                            {shareLabel}
+                          </Button>
+                          <Button size="sm" className="gap-2" onClick={handleCreateOwn}>
+                            <Plus className="h-4 w-4" />
+                            Create your own
+                          </Button>
+                        </div>
+                      </div>
+                    </header>
 
-                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    {/* Main Content Card */}
+                    <section className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_24px_70px_rgba(40,55,57,0.12)]">
+                      <div className="h-3 bg-[linear-gradient(90deg,var(--bm-teal-dark),var(--bm-teal),var(--bm-lime))]" />
+                      <div className="p-6 sm:p-8 lg:p-10">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-semibold uppercase text-foreground">
+                          <ExternalLink className="h-4 w-4 text-primary" />
+                          Social bookmark
+                        </div>
+                        <h1 className="mt-5 text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+                          {post.title}
+                        </h1>
+                        <RichContent
+                          html={descriptionHtml}
+                          className="mt-5 max-w-3xl text-lg leading-8 text-foreground/90 prose-p:my-4"
+                        />
+
+                        <div className="mt-6 grid gap-3 sm:grid-cols-2">
                           <div className="rounded-lg border border-border/80 bg-white/75 px-4 py-3">
                             <p className="text-xs font-semibold uppercase text-muted-foreground">Category</p>
                             <p className="mt-1 text-sm font-semibold text-foreground">{category}</p>
@@ -341,20 +433,6 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
                             </div>
                           ) : null}
                         </div>
-                      </div>
-
-                      <div className="p-6 sm:p-8 lg:p-10">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-semibold uppercase text-foreground">
-                          <ExternalLink className="h-4 w-4 text-primary" />
-                          Social bookmark
-                        </div>
-                        <h1 className="mt-5 text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-                          {post.title}
-                        </h1>
-                        <RichContent
-                          html={descriptionHtml}
-                          className="mt-5 max-w-3xl text-lg leading-8 text-foreground/90 prose-p:my-4"
-                        />
 
                         {postTags.length ? (
                           <div className="mt-6 flex flex-wrap gap-2">
@@ -382,8 +460,8 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
                           ) : null}
                         </div>
                       </div>
-                    </div>
-                  </section>
+                    </section>
+                  </>
                 ) : (
                   <div className={cn(isClassified ? "w-full" : "")}>
                     <TaskImageCarousel images={images} />
@@ -601,15 +679,7 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
                   </Link>
                 </li>
               ) : null}
-              <li>
-                <Link
-                  href={`/search?q=${encodeURIComponent(category)}`}
-                  className="text-primary underline-offset-4 hover:underline"
-                >
-                  Search more in {category}
-                </Link>
-              </li>
-            </ul>
+                          </ul>
           </nav>
         </section>
       </main>
