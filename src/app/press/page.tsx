@@ -23,13 +23,17 @@ export default function PressPage() {
             <h2 className="text-lg font-semibold">Press Kit</h2>
             <p className="mt-2 text-sm text-[#283739]/72">Download logos, screenshots, and platform overviews.</p>
             <div className="mt-4 space-y-3">
-              {['Brand logo pack (PNG, SVG)', 'Product screenshots (Web)', 'Company fact sheet (PDF)'].map((item) => (
-                <div key={item} className="flex items-center justify-between rounded-xl border border-[#2C5D63]/14 bg-[#F4F6F5] px-4 py-3">
-                  <p className="text-sm font-medium">{item}</p>
-                  <button type="button" className="inline-flex items-center gap-2 rounded-full border border-[#2C5D63]/24 px-3 py-1.5 text-xs font-semibold hover:bg-white">
+              {[
+                { name: 'Brand logo pack (PNG, SVG)', file: '/placeholder-logo.svg' },
+                { name: 'Product screenshots (Web)', file: '/placeholder.jpg' },
+                { name: 'Company fact sheet (PDF)', file: '/placeholder.svg' }
+              ].map((item) => (
+                <div key={item.name} className="flex items-center justify-between rounded-xl border border-[#2C5D63]/14 bg-[#F4F6F5] px-4 py-3">
+                  <p className="text-sm font-medium">{item.name}</p>
+                  <a href={item.file} download className="inline-flex items-center gap-2 rounded-full border border-[#2C5D63]/24 px-3 py-1.5 text-xs font-semibold hover:bg-white">
                     <Download className="h-3.5 w-3.5" />
                     Download
-                  </button>
+                  </a>
                 </div>
               ))}
             </div>

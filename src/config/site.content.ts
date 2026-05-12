@@ -2,7 +2,7 @@ import type { TaskKey } from '@/lib/site-config'
 
 export const siteContent = {
   navbar: {
-    tagline: 'Short reads & curated bookmarks',
+    tagline: '',
   },
   footer: {
     tagline: 'Social bookmarking for fast readers',
@@ -185,7 +185,6 @@ export const taskIntroCopy: Record<
       'Save what matters, share the URL, and keep your reading list on bharatamayu.com without leaving the broader site experience.',
     ],
     links: [
-      { label: 'Browse profiles', href: '/profile' },
       { label: 'Search', href: '/search' },
       { label: 'Home', href: '/' },
     ],
